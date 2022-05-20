@@ -1,0 +1,39 @@
+"A date string with format `Y-m-d`, e.g. `2011-05-23`."
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime
+    @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+type Query {
+    membres: [Membre!]! @all
+    membre(id: ID @eq): Membre @find
+    # membres: [Membre]! @field(resolver: "MemberQueries@all")
+    # membre(id: ID!): Membre @field(resolver: "MemberQueries@find")
+}
+type Mutation {
+    createMember(status: String!, info: String!): Membre! @create
+}
+
+type Mutation {
+    deleteMember(id: ID!): Membre @delete
+}
+
+# type User {
+#     id: ID!
+#     username: String!
+#     email: String!
+#     created_at: DateTime!
+#     updated_at: DateTime!
+# }
+
+type Info {
+    nom: String!
+    prenom: String!
+}
+
+type Membre {
+    id: ID!
+    status: String!
+    info: String!
+}

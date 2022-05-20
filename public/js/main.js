@@ -1,0 +1,3 @@
+function printPdf(){
+    window.print();
+}
