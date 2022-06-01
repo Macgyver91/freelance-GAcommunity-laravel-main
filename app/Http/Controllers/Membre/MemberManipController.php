@@ -82,40 +82,45 @@ class MemberManipController extends Controller
 
         $urlPhotoBuddy = $pathPhotoBuddy !== "" ? Storage::disk('do_spaces')->url($pathPhotoBuddy) : "";
         $urlPhotoFrereT = $pathPhotoFrereT !== "" ? Storage::disk('do_spaces')->url($pathPhotoFrereT) : "";
+
+        $status = Membre::find($request->ange);
+
         try {
+
             Membre::create([
                 "status" => $request->status,
-                "info" => json_encode([
-                    'nom' => $request->nom,
-                    'prenom' => $request->prenom,
-                    'email' => $request->email,
-                    'genre' => $request->genre,
-                    'date_naissance' => $request->date_naissance,
-                    'nationalite' => $request->nationalite,
-                    'telephone' => $request->telephone,
-                    'civil_state' => $request->civil_state,
-                    'metier' => $request->metier,
-                    'talents' => $request->talents,
-                    'ange' => $request->ange,
-                    'origin_invi' => $request->origin_invi,
-                    'contact_perso' => $request->contact_perso,
-                    'sautQDanse' => $request->sautQDanse,
-                    'musicSautQ' => $request->musicSautQ,
-                    'musicVol' => $request->musicVol,
-                    'contrat' => $request->contrat,
-                    'buddy' => $request->buddy,
-                    'photo_buddy' => $urlPhotoBuddy,
-                    'sautQDN2' => $request->sautQDN2,
-                    'sautQProjetN3' => $request->sautQProjetN3,
-                    'chequeSQ' => $request->chequeSQ,
-                    'leader_inspirant' => $request->leader_inspirant,
-                    'chaise_pourcentage' => $request->chaise_pourcentage,
-                    'sautQuantikReussi' => $request->sautQuantikReussi,
-                    'tribut_frere' => $request->tribut_frere,
-                    'frere_t_photo' => $urlPhotoFrereT,
-                    'animal_totem' => $request->animal_totem,
-                    'signe_astro' => $request->signe_astro,
-                    'numerologie' => $request->numerologie
+                "info"   => json_encode([
+                    'nom'                   => $request->nom,
+                    'prenom'                => $request->prenom,
+                    'email'                 => $request->email,
+                    'genre'                 => $request->genre,
+                    'date_naissance'        => $request->date_naissance,
+                    'nationalite'           => $request->nationalite,
+                    'telephone'             => $request->telephone,
+                    'civil_state'           => $request->civil_state,
+                    'metier'                => $request->metier,
+                    'talents'               => $request->talents,
+                    'ange'                  => (int)$request->ange,
+                    'status_invitation'     => $status ? ($status->status ?? "") : "",
+                    'origin_invi'           => $request->origin_invi,
+                    'contact_perso'         => $request->contact_perso,
+                    'sautQDanse'            => $request->sautQDanse,
+                    'musicSautQ'            => $request->musicSautQ,
+                    'musicVol'              => $request->musicVol,
+                    'contrat'               => $request->contrat,
+                    'buddy'                 => $request->buddy,
+                    'photo_buddy'           => $urlPhotoBuddy,
+                    'sautQDN2'              => $request->sautQDN2,
+                    'sautQProjetN3'         => $request->sautQProjetN3,
+                    'chequeSQ'              => $request->chequeSQ,
+                    'leader_inspirant'      => $request->leader_inspirant,
+                    'chaise_pourcentage'    => $request->chaise_pourcentage,
+                    'sautQuantikReussi'     => $request->sautQuantikReussi,
+                    'tribut_frere'          => $request->tribut_frere,
+                    'frere_t_photo'         => $urlPhotoFrereT,
+                    'animal_totem'          => $request->animal_totem,
+                    'signe_astro'           => $request->signe_astro,
+                    'numerologie'           => $request->numerologie
                 ])
             ]);
             return redirect()->route('admin.store_membre')->with("message", "Une membre a été crée avec succès");
@@ -157,41 +162,42 @@ class MemberManipController extends Controller
 
         $urlPhotoBuddy = $pathPhotoBuddy !== "" ? Storage::disk('do_spaces')->url($pathPhotoBuddy) : "";
         $urlPhotoFrereT = $pathPhotoFrereT !== "" ? Storage::disk('do_spaces')->url($pathPhotoFrereT) : "";
-
+        $status = Membre::find($request->ange);
 
         try {
             $membre->status = $request->status;
             $membre->info = json_encode([
-                'nom'=>$request->nom,
-                'prenom'=>$request->prenom,
-                'email'=>$request->email,
-                'genre'=>$request->genre,
-                'date_naissance'=>$request->date_naissance,
-                'nationalite'=>$request->nationalite,
-                'telephone'=>$request->telephone,
-                'civil_state'=> $request->civil_state,
-                'metier'=>$request->metier,
-                'talents'=>$request->talents,
-                'origin_invi'=>$request->origin_invi,
-                'contact_perso' => $request->contact_perso,
-                'sautQDanse' => $request->sautQDanse,
-                'musicSautQ' => $request->musicSautQ,
-                'musicVol' => $request->musicVol,
-                'contrat' => $request->contrat,
-                'buddy' => $request->buddy,
-                'ange'=>(int)$request->ange,
-                'photo_buddy'=> $urlPhotoBuddy !== "" ? $urlPhotoBuddy : json_decode($membre->info)->photo_buddy,
-                'sautQDN2'=>$request->sautQDN2,
-                'sautQProjetN3'=>$request->sautQProjetN3,
-                'chequeSQ'=>$request->chequeSQ,
-                'leader_inspirant'=>$request->leader_inspirant,
-                'chaise_pourcentage'=>$request->chaise_pourcentage,
-                'sautQuantikReussi'=> $request->sautQuantikReussi,
-                'tribut_frere' => $request->tribut_frere,
-                'frere_t_photo'=> $urlPhotoFrereT !== "" ? $urlPhotoFrereT : json_decode($membre->info)->frere_t_photo,
-                'animal_totem'=> $request->animal_totem,
-                'signe_astro'=>$request->signe_astro,
-                'numerologie'=> $request->numerologie
+                'nom'                           =>$request->nom,
+                'prenom'                        =>$request->prenom,
+                'email'                         =>$request->email,
+                'genre'                         =>$request->genre,
+                'date_naissance'                =>$request->date_naissance,
+                'nationalite'                   =>$request->nationalite,
+                'telephone'                     =>$request->telephone,
+                'civil_state'                   => $request->civil_state,
+                'metier'                        =>$request->metier,
+                'talents'                       =>$request->talents,
+                'origin_invi'                   =>$request->origin_invi,
+                'contact_perso'                 => $request->contact_perso,
+                'sautQDanse'                    => $request->sautQDanse,
+                'musicSautQ'                    => $request->musicSautQ,
+                'musicVol'                      => $request->musicVol,
+                'contrat'                       => $request->contrat,
+                'buddy'                         => $request->buddy,
+                'ange'                          =>(int)$request->ange,
+                'status_invitation'             => $status ? ($status->status ?? "") : "",
+                'photo_buddy'                   => $urlPhotoBuddy !== "" ? $urlPhotoBuddy : json_decode($membre->info)->photo_buddy,
+                'sautQDN2'                      =>$request->sautQDN2,
+                'sautQProjetN3'                 =>$request->sautQProjetN3,
+                'chequeSQ'                      =>$request->chequeSQ,
+                'leader_inspirant'              =>$request->leader_inspirant,
+                'chaise_pourcentage'            =>$request->chaise_pourcentage,
+                'sautQuantikReussi'             => $request->sautQuantikReussi,
+                'tribut_frere'                  => $request->tribut_frere,
+                'frere_t_photo'                 => $urlPhotoFrereT !== "" ? $urlPhotoFrereT : json_decode($membre->info)->frere_t_photo,
+                'animal_totem'                  => $request->animal_totem,
+                'signe_astro'                   =>$request->signe_astro,
+                'numerologie'                   => $request->numerologie
             ]);
             $membre->save();
             return redirect()->route('admin.membre')->with("message", "Une membre a été modifiée avec succès");
@@ -236,6 +242,6 @@ class MemberManipController extends Controller
             "lien"=>$lien,
             'links'=>$links
         ]);
-        
+
     }
 }

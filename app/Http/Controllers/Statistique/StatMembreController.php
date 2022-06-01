@@ -32,48 +32,83 @@ class StatMembreController extends Controller
     //         'a'=>$a
     //     ]);
     // }
-    
+
     public function index(){
-          
-        $allMembres = DB::select( DB::raw( "SELECT membres.id, membres.info 
-            FROM membres 
-            WHERE membres.status = 'membre' " ) 
+
+        $allMembres = DB::select( DB::raw( "SELECT membres.id, membres.info
+            FROM membres
+            WHERE membres.status = 'membre' " )
         );
-        
-        $grouped = array();
+
+        $grouped     = array();
+        $indirect = array();
 
         foreach ($allMembres as $items) {
             # code...
-                
-            $invite = DB::select( DB::raw( "SELECT COUNT( JSON_EXTRACT( info, '$.ange' ) ) as count_invite, JSON_EXTRACT( info, '$.ange' ) as userId 
-                                            FROM membres 
-                                            WHERE ( status = 'prospect' AND JSON_EXTRACT( info, '$.ange' ) = $items->id ) 
-                                            GROUP BY JSON_EXTRACT( info, '$.ange' );" 
+
+            $invite = DB::select( DB::raw( "SELECT COUNT( JSON_EXTRACT( info, '$.ange' ) ) as count_invite, JSON_EXTRACT( info, '$.ange' ) as userId
+                                            FROM membres
+                                            WHERE ( status = 'prospect' AND JSON_EXTRACT( info, '$.ange' ) = $items->id AND JSON_EXTRACT( info, '$.status_invitation' ) = 'prospect' )
+                                            GROUP BY JSON_EXTRACT( info, '$.ange' );"
                                         )
                                 );
-                           
+
             if ( !empty($invite) ) {
-                # code... 
+                # code...
                 foreach( $invite as $item ) {
-                    array_push($grouped, [
-                        "prenom"        => json_decode($items->info)->prenom,
-                        "nom"           => json_decode($items->info)->nom,
-                        "telephone"     => json_decode($items->info)->telephone,
-                        "userId"        =>(int)$item->userId, 
-                        "count_invite"  => (int) $item->count_invite
-                    ]);
+                    $invite_indirect = DB::select( DB::raw( "SELECT COUNT( JSON_EXTRACT( info, '$.status_invitation' ) ) as count_indirects, JSON_EXTRACT( info, '$.ange' ) as userId
+                                FROM membres
+                                WHERE ( status = 'prospect' AND JSON_EXTRACT( info, '$.ange' ) = $item->userId AND JSON_EXTRACT( info, '$.status_invitation' ) = 'membre' )
+                                GROUP BY JSON_EXTRACT( info, '$.ange' );"
+                            )
+                    );
+                    if ( $invite_indirect ) {
+                        # code...
+                        foreach( $invite_indirect as $invits ) {
+                            if ( $invits->userId === $item->userId ) {
+                                # code...
+
+                                array_push($grouped, [
+                                    "prenom"                => json_decode($items->info)->prenom,
+                                    "nom"                   => json_decode($items->info)->nom,
+                                    "telephone"             => json_decode($items->info)->telephone,
+                                    "userId"                => (int)$item->userId,
+                                    "count_invite"          => (int) $item->count_invite,
+                                    "count_indirects"       => (int) $invits->count_indirects,
+                                ]);
+
+                            }
+
+                        }
+                    } else {
+                        # code...
+
+                        array_push($grouped, [
+                            "prenom"                => json_decode($items->info)->prenom,
+                            "nom"                   => json_decode($items->info)->nom,
+                            "telephone"             => json_decode($items->info)->telephone,
+                            "userId"                => (int)$item->userId,
+                            "count_invite"          => (int) $item->count_invite,
+                            "count_indirects"       => 0,
+                        ]);
+
+                    }
+
                 }
-                
+
             }
+
+
         }
-        
+
         $a=0;
         $count=0;
+        $total = 0;
 
-        return view('statistique.statMembreTribu', compact("allMembres", "invite", "a", "grouped", "count"));
+        return view('statistique.statMembreTribu', compact("allMembres", "invite", "a", "grouped", "count", "indirect", "total"));
 
     }
-    
+
 }
 
 

@@ -186,14 +186,12 @@
                                 </div>
                                 <div class="form-group col-12 col-md-4">
                                     <label class="" for="ange">Ange</label>
-                                    <select id="ange" name="ange"
-                                        class="form-control @error('ange') border-warning
-                                    @enderror">
-                                        <option value="{{ $oneMembre->id }}">
+                                    <select id="ange" name="ange" class="form-control @error('ange') border-warning @enderror">
+                                        {{-- <option value="{{ $oneMembre->id }}">
                                             {{ json_decode($oneMembre->info)->ange }}
-                                        </option>
+                                        </option> --}}
                                         @foreach ($AllMembres as $membre)
-                                            <option value="{{ $membre->id }}">
+                                            <option value="{{ $membre->id }}" {{ (int)json_decode($oneMembre->info)->ange === $membre->id ? 'selected':'' }}>
                                                 {{ json_decode($membre->info)->nom }}
                                                 {{ json_decode($membre->info)->prenom }}
                                             </option>

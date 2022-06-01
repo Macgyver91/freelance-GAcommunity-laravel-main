@@ -35,6 +35,7 @@
                                             <option value="2023">2023</option>
                                         </select>
                                     </div>
+                                    {{-- @dump( $indirect ) --}}
                                     <div class="pt-4">
                                         <div class="borderP tb table-responsive">
                                             <table aria-describedat="invitationTable" class="table table-hover">
@@ -61,8 +62,9 @@
                                                                 <td>{{ $group["nom"] }}</td>
                                                                 <td>{{ $group["telephone"] }}</td>
                                                                 <td>{{ $group["count_invite"] }}</td>
-                                                                <td>{{ $group["count_invite"] }}</td>
-                                                                <td>{{ $group["count_invite"] }}</td>
+
+                                                                <td>{{ $group["count_indirects"] }}</td>
+                                                                <td>{{ $group["count_invite"] + $group["count_indirects"] }}</td>
                                                             </tr>
 
                                                         @endforeach
@@ -130,7 +132,7 @@
                                                             {{-- @dump( $grouped->sortBy($group["count_invite"]) ) --}}
                                                             <tr>
                                                                 <td>{{ $count+=1 }} <sup>{{ $count==1 ? "er":"eme" }}</sup></td>
-                                                                
+
                                                                 <td>Tribu</td>
                                                                 <td>{{ $group["count_invite"] }}</td>
                                                                 <td>{{ $group["count_invite"] }}</td>
@@ -190,7 +192,7 @@
                         ["Invitation", "Nombre d'invitation total"],
                         @if ( $allMembres && !empty($grouped) )
                             @foreach ($grouped as $group)
-                                [`{{ $group["prenom"] .' '. $group["nom"] }}`, {{ $group["count_invite"] }}],
+                                [`{{ $group["prenom"] .' '. $group["nom"] }}`, {{ $group["count_invite"] + $group["count_indirects"]  }}],
                             @endforeach
                         @endif
                     ]);
